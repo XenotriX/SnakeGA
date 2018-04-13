@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"org.xenotrix.snakega","l":"Game"},{"p":"org.xenotrix.snakega","l":"GameLoop"},{"p":"org.xenotrix.snakega","l":"Genotype"},{"p":"org.xenotrix.snakega","l":"Player"},{"p":"org.xenotrix.snakega","l":"Player.DIR"},{"p":"org.xenotrix.snakega","l":"SnakeGA"}]
