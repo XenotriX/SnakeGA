@@ -4,8 +4,6 @@ package org.xenotrix.snakega;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -20,7 +18,7 @@ import javafx.stage.Stage;
 import org.xenotrix.snakega.ui.GameView;
 import org.xenotrix.snakega.ui.NetworkView;
 import org.xenotrix.snakega.ui.statistics.StatisticsView;
-// TODO Split this into multiple classes to improve readability.
+
 /**
  * Main class
  * @author XenotriX
@@ -32,8 +30,8 @@ public class SnakeGA extends Application {
 	private static StatisticsView statisticsView;
 
 	// Statistics
-	ArrayList<Float> highScoreList = new ArrayList<Float>();
-	ArrayList<Float> avgScoreList = new ArrayList<Float>();
+	ArrayList<Float> highScoreList = new ArrayList<>();
+	ArrayList<Float> avgScoreList = new ArrayList<>();
 	int generation = 1;
 	
 	static int timeMultiplier = 1;
@@ -114,8 +112,6 @@ public class SnakeGA extends Application {
 
 	/**
 	 * Creates the initial population
-	 * @param Population size
-	 * @return Population
 	 */
 	private static Genotype[] initializePopulation(int populationSize) {
 		Genotype[] population = new Genotype[populationSize];
@@ -130,9 +126,6 @@ public class SnakeGA extends Application {
 
 	/**
 	 * Initializes the games and adds them to the window grid.
-	 * @param window
-	 * @param Population size
-	 * @return Games
 	 */
 	private static Game[] initializeGames(int populationSize) {
 		// Initiate game
@@ -158,7 +151,6 @@ public class SnakeGA extends Application {
 	/**
 	 * Creates a window with all the needed UI elements.
 	 * It's a bit messy :)
-	 * @return Window
 	*/
 	private static void createWindow(Stage stage){
 		// Grid
@@ -217,12 +209,8 @@ public class SnakeGA extends Application {
 		Label lblMult = new Label("Time Scale: ");
 		menu.getChildren().add(lblMult);
 		Slider slidMultiplier = new Slider(1, 100, 1);
-		slidMultiplier.valueProperty().addListener(new ChangeListener<Number>(){
-			public void changed(ObservableValue<? extends Number> ov,
-					Number old_val, Number new_val){
-						timeMultiplier = new_val.intValue();
-			}
-		});
+		slidMultiplier.valueProperty().addListener((ov, old_val, new_val)
+				-> timeMultiplier = new_val.intValue());
 		menu.getChildren().add(slidMultiplier);
 		
 		// Graphs
@@ -235,8 +223,6 @@ public class SnakeGA extends Application {
 
 	/**
 	 * Calculates the average fitness of the given population
-	 * @param Population
-	 * @return Average fitness
 	 */
 	private static float calcAverage(Genotype[] population) {
 		int sum = 0;
@@ -248,8 +234,6 @@ public class SnakeGA extends Application {
 	
 	/**
 	 * Finds the highest fitness in the population.
-	 * @param Population
-	 * @return Highest fitness
 	 */
 	private static int getHighestFitness(Genotype[] population) {
 		int highest = 0;
@@ -263,8 +247,6 @@ public class SnakeGA extends Application {
 	
 	/**
 	 * Assigns a genotype to every game
-	 * @param Games
-	 * @param Population
 	 */
 	private static void assignGenotypes(Game[] games, Genotype[] population) {
 		for (int i = 0; i < games.length; i++) {
@@ -276,8 +258,6 @@ public class SnakeGA extends Application {
 	/**
 	 * Generates new generation by crossover.
 	 * The Parents are selected via a Accept-Reject Selection.
-	 * @param Population
-	 * @return New population
 	 */
 	private static Genotype[] crossoverPopulation(Genotype[] population) {
 		int sum = 0;
@@ -295,7 +275,7 @@ public class SnakeGA extends Application {
 			Genotype parent1 = null;
 			Genotype parent2 = null;
 			int indexParent1 = 0;
-			int indexParent2 = 0;
+			int indexParent2;
 			
 			// Select first parent
 			while (parent1 == null) {
@@ -320,22 +300,19 @@ public class SnakeGA extends Application {
 			
 			// Crossover
 			newPopulation[i] = parent1.crossover(parent2);
-			newPopulation[i + 1] = parent1.clone(); // FIXME Replace with clone()
+			newPopulation[i + 1] = parent1.clone();
 		}
 		return newPopulation;
 	}
 
 	/**
 	 * Applies a mutation to every genotype in the population
-	 * @param Mutation rate
-	 * @param Population
-	 * @return Mutated population
 	 */
-	private static Genotype[] mutatePopulation(final float MUTATION_RATE, Genotype[] population) {
+	private static Genotype[] mutatePopulation(float mutationRate, Genotype[] population) {
 		Genotype[] newPopulation = new Genotype[population.length];
 		// Mutation
 		for (int i = 0; i < newPopulation.length; i++) {
-			newPopulation[i] = population[i].mutate(MUTATION_RATE);
+			newPopulation[i] = population[i].mutate(mutationRate);
 		}
 		return newPopulation;
 	}

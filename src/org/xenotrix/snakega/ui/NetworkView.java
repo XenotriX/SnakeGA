@@ -32,10 +32,9 @@ public class NetworkView extends Canvas {
         // Measurements
         float height = (float)getHeight();
         int numberOfInputs = inputs.length;
-        float diameterOfCircle = circleSize;
-        float offsetTopInputs = (height - (numberOfInputs * diameterOfCircle + (numberOfInputs - 1) * gap)) / 2;
+        float offsetTopInputs = (height - (numberOfInputs * circleSize + (numberOfInputs - 1) * gap)) / 2;
         int numberOfOuputs = outputs.length;
-        float offsetTopOutputs = (height - (numberOfOuputs * diameterOfCircle + (numberOfOuputs - 1) * gap)) / 2;
+        float offsetTopOutputs = (height - (numberOfOuputs * circleSize + (numberOfOuputs - 1) * gap)) / 2;
 
         //// Draw lines
         for(int o = 0; o < weights.length; o++){

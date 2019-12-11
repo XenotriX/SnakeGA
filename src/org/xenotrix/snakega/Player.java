@@ -78,7 +78,7 @@ public class Player {
 		this.position[0] = Math.round(arenaSize/(float)2);
 		this.position[1] = Math.round(arenaSize/(float)2);
 		
-		setBody(new LinkedList<int[]>());
+		setBody(new LinkedList<>());
 		getBody().add(new int[]{position[0], position[1]});
 		getBody().add(new int[]{position[0], position[1] + 1});
 		getBody().add(new int[]{position[0], position[1] + 2});
@@ -125,7 +125,7 @@ public class Player {
 
 	/**
 	 * Proceeds the Neural network
-	 * @param Position of the apple
+	 * @param applePosition Position of the apple
 	 */
 	private float[] calcInputs(int[] applePosition){
 		float[] inputs = new float[6];
@@ -156,7 +156,6 @@ public class Player {
 	
 	/**
 	 * Processes the neural network and returns the output layer.
-	 * @param inputs Inputs
 	 * @return Outputs as softmax distribution
 	 */
 	public float[] calculateOutputs(float[] inputs) {
@@ -167,15 +166,11 @@ public class Player {
 		}
 		
 		// Apply softmax
-		float [] softmaxDistribution = softmax(wheightedSums);
-		return softmaxDistribution;
+		return softmax(wheightedSums);
 	}
 
 	/**
 	 * Returns the weighted sum of the inputs and weights.
-	 * @param Inputs
-	 * @param Weights
-	 * @return Weighted sum
 	 */
 	private float weightedSum(float[] inputs, float[] weights) {
 		float sum = 0;
@@ -187,8 +182,6 @@ public class Player {
 	
 	/**
 	 * Returns the softmax distribution of the inputs.
-	 * @param Values
-	 * @return Distribution
 	 */
 	private float[] softmax(float[] values) {
 		// Calculate exp for every output
@@ -198,8 +191,7 @@ public class Player {
 		
 		// Sum up all exps
 		float sum = 0;
-		for (int i = 0; i < exp.length; i++)
-			sum += exp[i];
+		for (float v : exp) sum += v;
 		
 		// Calculate individual probability
 		float[] result = new float[exp.length];
@@ -213,12 +205,11 @@ public class Player {
 	 * Directions
 	 */
 	public enum DIR {
-		UP, DOWN, RIGHT, LEFT;
+		UP, DOWN, RIGHT, LEFT
 	}
 	
 	/**
 	 * Moves the player in the specified direction.
-	 * @param direction Direction
 	 */
 	public void move(DIR direction){
 		switch (direction) {
@@ -258,7 +249,6 @@ public class Player {
 	
 	/**
 	 * Returns the current score.
-	 * @return Score
 	 */
 	public int getScore(){
 		return this.score;
