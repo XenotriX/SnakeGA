@@ -11,9 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -22,7 +19,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.xenotrix.snakega.ui.GameView;
 import org.xenotrix.snakega.ui.NetworkView;
-import org.xenotrix.snakega.ui.statistics.Graph;
+import org.xenotrix.snakega.ui.statistics.StatisticsView;
 // TODO Split this into multiple classes to improve readability.
 /**
  * Main class
@@ -32,7 +29,8 @@ import org.xenotrix.snakega.ui.statistics.Graph;
 public class SnakeGA extends Application {
 	private static final float MUTATION_RATE = 0.2f;
 	private static final int POPULATION_SIZE = 1000;
-	
+	private static StatisticsView statisticsView;
+
 	// Statistics
 	ArrayList<Float> highScoreList = new ArrayList<Float>();
 	ArrayList<Float> avgScoreList = new ArrayList<Float>();
@@ -96,8 +94,7 @@ public class SnakeGA extends Application {
 				avgScoreList.add(calcAverage(population));
 
 				// Render Graphs
-                graphBest.render(highScoreList);
-                graphAvg.render(avgScoreList);
+                statisticsView.update(highScoreList, avgScoreList);
 
 				// Genetic operations
 				Genotype[] newPopulation = crossoverPopulation(population);
@@ -154,8 +151,6 @@ public class SnakeGA extends Application {
 	// UI elements that need to be accessible.
 	static GameView gameView;
 	static NetworkView networkView;
-	static Graph graphBest;
-	static Graph graphAvg;
 	static Label lblGenotype;
 	static Label lblScore;
 	static Label lblGen;
@@ -231,19 +226,8 @@ public class SnakeGA extends Application {
 		menu.getChildren().add(slidMultiplier);
 		
 		// Graphs
-		TabPane graphs = new TabPane();
-		graphs.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-		root.add(graphs, 1, 1);
-		//// Best per generation
-		Tab bestPerGen = new Tab("Best per generation");
-		graphs.getTabs().add(bestPerGen);
-		graphBest = new Graph(700, 300);
-		bestPerGen.setContent(graphBest);
-		//// Avg per generation
-		Tab avgPerGen = new Tab("Average per generation");
-		graphs.getTabs().add(avgPerGen);
-		graphAvg = new Graph(700, 300);
-		avgPerGen.setContent(graphAvg);
+		statisticsView = new StatisticsView();
+		root.add(statisticsView, 1, 1);
 		stage.setScene(new Scene(root, 1320, 900));
 		stage.setTitle("SnakeGA");
 		stage.show();
