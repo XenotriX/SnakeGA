@@ -22,6 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.xenotrix.snakega.ui.GameView;
+import org.xenotrix.snakega.ui.NetworkView;
 // TODO Split this into multiple classes to improve readability.
 /**
  * Main class
@@ -156,8 +158,8 @@ public class SnakeGA extends Application {
 	}
 	
 	public void render(Game game){
-		game.renderGame(gameCanvas);
-		game.renderNetwork(networkCanvas);
+		gameView.render(game);
+		networkView.render(game);
 	}
 
 	/**
@@ -197,8 +199,8 @@ public class SnakeGA extends Application {
 	}
 
 	// UI elements that need to be accessible.
-	static Canvas gameCanvas;
-	static Canvas networkCanvas;
+	static GameView gameView;
+	static NetworkView networkView;
 	static Canvas graphBestCanvas;
 	static Canvas graphAvgCanvas;
 	static Label lblGenotype;
@@ -251,12 +253,12 @@ public class SnakeGA extends Application {
 		lblScore.setFont(new Font(30));
 		stats.getChildren().add(lblScore);
 		////// Game
-		gameCanvas = new Canvas(500, 500);
-		game.getChildren().add(gameCanvas);
+		gameView = new GameView(500, 500);
+		game.getChildren().add(gameView);
 
 		// Neural Network
-		networkCanvas = new Canvas(500, 500);
-		root.add(networkCanvas, 1, 0);
+		networkView = new NetworkView(500, 500);
+		root.add(networkView, 1, 0);
 		
 		// Menu
 		VBox menu = new VBox();
