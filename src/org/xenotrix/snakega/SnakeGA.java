@@ -8,8 +8,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
@@ -24,6 +22,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.xenotrix.snakega.ui.GameView;
 import org.xenotrix.snakega.ui.NetworkView;
+import org.xenotrix.snakega.ui.statistics.Graph;
 // TODO Split this into multiple classes to improve readability.
 /**
  * Main class
@@ -46,7 +45,7 @@ public class SnakeGA extends Application {
 	Genotype[] population = initializePopulation(POPULATION_SIZE);
 	
 	Stage stage;
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -97,9 +96,9 @@ public class SnakeGA extends Application {
 				avgScoreList.add(calcAverage(population));
 
 				// Render Graphs
-				renderGraph(graphBestCanvas, highScoreList);
-				renderGraph(graphAvgCanvas, avgScoreList);
-				
+                graphBest.render(highScoreList);
+                graphAvg.render(avgScoreList);
+
 				// Genetic operations
 				Genotype[] newPopulation = crossoverPopulation(population);
 				newPopulation = mutatePopulation(MUTATION_RATE, newPopulation);
@@ -111,52 +110,6 @@ public class SnakeGA extends Application {
 		}
 	}
 
-	/**
-	 * Draws a graph of the provided data on the canvas
-	 * @param canvas Canvas to draw on
-	 * @param list List of values
-	 */
-	public void renderGraph(Canvas canvas, ArrayList<Float> list){
-		GraphicsContext ctx = canvas.getGraphicsContext2D();
-		int length = list.size();
-		if (length == 0) return;
-		
-		ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		
-		double[] x = new double[length + 2];
-		double[] y = new double[length + 2];
-		
-		
-		// Find highest
-		float highest = 0;
-		for (float val: list){
-			if (val > highest) highest = val;
-		}
-		
-		// set points
-		float ratio = (float)canvas.getWidth() / (length - 1);
-		for (int i = 0; i < length; i++){
-			// Smooth graph
-			float sum = 0;
-			int count = 0;
-			for (int j = (i > 5)? i - 5 : i; j < ((i < length - 5)? i + 5 : length) ; j++){
-				sum += list.get(j);
-				count++;
-			}
-			// Add values
-			x[i] = ratio * i;
-			y[i] = canvas.getHeight() - (sum / count) * (canvas.getHeight() / highest);
-		}
-		
-		// Set bottom points
-		x[x.length - 2] = canvas.getWidth();
-		y[y.length - 2] = canvas.getHeight();
-		x[x.length - 1] = 0;
-		y[y.length - 1] = canvas.getHeight();
-		
-		ctx.fillPolygon(x, y, length + 2);
-	}
-	
 	public void render(Game game){
 		gameView.render(game);
 		networkView.render(game);
@@ -201,8 +154,8 @@ public class SnakeGA extends Application {
 	// UI elements that need to be accessible.
 	static GameView gameView;
 	static NetworkView networkView;
-	static Canvas graphBestCanvas;
-	static Canvas graphAvgCanvas;
+	static Graph graphBest;
+	static Graph graphAvg;
 	static Label lblGenotype;
 	static Label lblScore;
 	static Label lblGen;
@@ -284,13 +237,13 @@ public class SnakeGA extends Application {
 		//// Best per generation
 		Tab bestPerGen = new Tab("Best per generation");
 		graphs.getTabs().add(bestPerGen);
-		graphBestCanvas = new Canvas(700, 300);
-		bestPerGen.setContent(graphBestCanvas);
+		graphBest = new Graph(700, 300);
+		bestPerGen.setContent(graphBest);
 		//// Avg per generation
 		Tab avgPerGen = new Tab("Average per generation");
 		graphs.getTabs().add(avgPerGen);
-		graphAvgCanvas = new Canvas(700, 300);
-		avgPerGen.setContent(graphAvgCanvas);
+		graphAvg = new Graph(700, 300);
+		avgPerGen.setContent(graphAvg);
 		stage.setScene(new Scene(root, 1320, 900));
 		stage.setTitle("SnakeGA");
 		stage.show();
