@@ -44,7 +44,6 @@ public class Game {
 	public void next() {
 		checkCollision();
 		checkScore();
-		player.takeDecision(applePosition);
 	}
 	
 	/**

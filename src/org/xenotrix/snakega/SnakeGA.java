@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SnakeGA {
 	private static final float MUTATION_RATE = 0.2f;
 	private static final int POPULATION_SIZE = 1000;
+	private final NeuronalNetwork nn;
 
 	// Statistics
 	ArrayList<Integer> highScoreList = new ArrayList<>();
@@ -19,12 +20,15 @@ public class SnakeGA {
 	int generation = 1;
 	
 	static int timeMultiplier = 1;
-	GameLoop loop;
-	
+
 	Game[] games = initializeGames(POPULATION_SIZE);
 	Genotype[] population = initializePopulation(POPULATION_SIZE);
 
 	public SnakeGA() {
+		nn = new NeuronalNetwork();
+		nn.setInputs(6);
+		nn.setOutputs(4);
+		nn.addHiddenLayer(5);
 		assignGenotypes(games, population);
 	}
 	
@@ -39,9 +43,31 @@ public class SnakeGA {
 			 * Check if at least on player is still alive
 			 */
 			boolean isRunning = false;
-			for (int j = 0; j < games.length; j++) {
-				if (games[j].getPlayer().getLife()) {
-					games[j].next();
+			for (Game game : games) {
+				Player player = game.getPlayer();
+				if (player.getLife()) {
+					// Process nn
+					float[] inputs = player.calcInputs(game.getApplePosition());
+					float[][] weights = player.getGenotype().getChromosome();
+					float[] outputs = nn.process(weights, inputs);
+					// Find index with highest value
+					int highestIndex = 0;
+					for (int index = 0; index < outputs.length; index++) {
+						if (outputs[index] < outputs[highestIndex]) {
+							highestIndex = i;
+						}
+					}
+					// Choose direction to move
+					if (highestIndex == 0) {
+						player.move(Player.DIR.UP);
+					} else if (highestIndex == 2) {
+						player.move(Player.DIR.DOWN);
+					} else if (highestIndex == 1) {
+						player.move(Player.DIR.RIGHT);
+					} else if (highestIndex == 3) {
+						player.move(Player.DIR.LEFT);
+					}
+					game.next();
 					isRunning = true;
 				}
 			}

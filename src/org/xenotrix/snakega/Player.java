@@ -92,42 +92,10 @@ public class Player {
 	public float[] outputs;
 
 	/**
-	 * Moves according to the given inputs.
-	 * The output are calculated through a weighted sum of the inputs.
-	 * @param applePosition Position of the apple
-	 */
-	public void takeDecision(int[] applePosition) {
-		if (timeToLive-- <= 0){
-			alive = false;
-			return;
-		}
-		
-		inputs = calcInputs(applePosition);
-		
-		outputs = calculateOutputs(inputs);
-		
-		// Find index with highest value
-		int index = 0;
-		for (int i = 0; i < outputs.length; i++)
-			if (outputs[i] < outputs[index])
-				index = i;
-		
-		// Choose direction to move
-		if (index == 0)
-			this.move(DIR.UP);
-		else if (index == 2)
-			this.move(DIR.DOWN);
-		else if (index == 1)
-			this.move(DIR.RIGHT);
-		else if (index == 3)
-			this.move(DIR.LEFT);
-	}
-
-	/**
 	 * Proceeds the Neural network
 	 * @param applePosition Position of the apple
 	 */
-	private float[] calcInputs(int[] applePosition){
+	public float[] calcInputs(int[] applePosition){
 		float[] inputs = new float[6];
 		// Distance to apple
 		inputs[0] = (float)(applePosition[0] - position[0]) / (float)arenaSize;
@@ -153,54 +121,7 @@ public class Player {
 		}
 		return inputs;
 	}
-	
-	/**
-	 * Processes the neural network and returns the output layer.
-	 * @return Outputs as softmax distribution
-	 */
-	public float[] calculateOutputs(float[] inputs) {
-		// Weighted sum
-		float[] wheightedSums = new float[genotype.getChromosome().length];
-		for (int i = 0; i < wheightedSums.length; i++) {
-			wheightedSums[i] = weightedSum(inputs, genotype.getChromosome()[i]);
-		}
-		
-		// Apply softmax
-		return softmax(wheightedSums);
-	}
 
-	/**
-	 * Returns the weighted sum of the inputs and weights.
-	 */
-	private float weightedSum(float[] inputs, float[] weights) {
-		float sum = 0;
-		for (int i = 0; i < inputs.length; i++)
-			sum += inputs[i] * weights[i];
-		
-		return sum;
-	}
-	
-	/**
-	 * Returns the softmax distribution of the inputs.
-	 */
-	private float[] softmax(float[] values) {
-		// Calculate exp for every output
-		float[] exp = new float[values.length];
-		for (int i = 0; i < exp.length; i++)
-			exp[i] = (float)Math.exp(values[i]);
-		
-		// Sum up all exps
-		float sum = 0;
-		for (float v : exp) sum += v;
-		
-		// Calculate individual probability
-		float[] result = new float[exp.length];
-		for (int i = 0; i < result.length; i++)
-			result[i] = exp[i] / sum;
-		
-		return result;
-	}
-	
 	/**
 	 * Directions
 	 */
@@ -212,6 +133,11 @@ public class Player {
 	 * Moves the player in the specified direction.
 	 */
 	public void move(DIR direction){
+		if (timeToLive-- <= 0){
+			alive = false;
+			return;
+		}
+
 		switch (direction) {
 		case UP:
 			this.position[1]--;
