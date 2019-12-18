@@ -21,8 +21,8 @@ public class StatisticsView extends TabPane {
         avgPerGen.setContent(graphAvg);
     }
 
-    public void update(ArrayList<Float> highScoreList, ArrayList<Float> avgScoreList) {
-        graphBest.render(highScoreList);
-        graphAvg.render(avgScoreList);
+    public void update(ArrayList<Integer> highScoreList, ArrayList<Float> avgScoreList) {
+        graphBest.renderInts(highScoreList);
+        graphAvg.renderFloats(avgScoreList);
     }
 }

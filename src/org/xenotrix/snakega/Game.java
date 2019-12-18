@@ -14,7 +14,9 @@ import javafx.scene.shape.ArcType;
  */
 public class Game {
 	private static final int GRID_SIZE = 20;
-	
+
+	private final int id;
+
 	private Player player = new Player(GRID_SIZE);
 	
 	public Player getPlayer() {
@@ -27,8 +29,13 @@ public class Game {
 		return applePosition;
 	}
 	
-	Game(){
+	Game(int id){
+	    this.id = id;
 		resetApple();
+	}
+
+	public int getId() {
+		return this.id;
 	}
 
 	/**

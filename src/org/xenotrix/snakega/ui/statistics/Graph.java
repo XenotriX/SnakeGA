@@ -3,6 +3,7 @@ package org.xenotrix.snakega.ui.statistics;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Graph extends Canvas {
@@ -15,7 +16,7 @@ public class Graph extends Canvas {
      * Draws a graph of the provided data on the canvas
      * @param list List of values
      */
-    public void render(ArrayList<Float> list) {
+    public void renderFloats(ArrayList<Float> list) {
         GraphicsContext ctx = getGraphicsContext2D();
         int length = list.size();
         if (length == 0) return;
@@ -56,4 +57,11 @@ public class Graph extends Canvas {
         ctx.fillPolygon(x, y, length + 2);
     }
 
+    public void renderInts(ArrayList<Integer> list) {
+        ArrayList<Float> floatList = new ArrayList<>();
+        for (Integer number : list) {
+            floatList.add((float)number);
+        }
+        renderFloats(floatList);
+    }
 }
